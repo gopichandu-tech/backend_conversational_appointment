@@ -37,7 +37,7 @@ async def chat(req: ChatRequest):
         session_id = create_session()
         session = get_session(session_id)
 
-    reply = handle_message(session, req.message)
+    reply = await handle_message(session, req.message)
     return {
         "reply": reply,
         "session_id": session_id
