@@ -3,7 +3,7 @@ from app.calendly import create_calendly_booking
 from app.users import user_exists, save_user
 import random
 
-def handle_message(session, message: str):
+async def handle_message(session, message: str):
     if not session:
         return "⚠️ Oops! Your session expired. Please refresh and start again."
 
@@ -24,7 +24,7 @@ def handle_message(session, message: str):
         if "@" not in message:
             return "⚠️ Hmm, that doesn't look like a valid email. Could you try again?"
         data["email"] = message
-        if user_exists(message):
+        if await user_exists(message):
             session["phase"] = 1
             return "📌 Looks like you already have an appointment with this email. Check your Calendly confirmation."
         session["phase"] = 3
@@ -106,7 +106,7 @@ def handle_message(session, message: str):
             session["phase"] = 1
             return "No problem! Let’s start over and get the details right. 😊"
         link = create_calendly_booking(data)
-        save_user(data)
+        await save_user(data)
         session["phase"] = 1
         return (
             f"🎉 Fantastic, {data['name']}! Your appointment is confirmed.\n\n"
